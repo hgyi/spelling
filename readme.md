@@ -1,1 +1,1 @@
-#第一次 Commit
+#使用 Webduino FRID 製作 英文單字 拼字練習
