@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title data-translation="title">Webduino Blockly - 繪製溫濕度圖表</title>
+  <!-- webduino -->
+  <script src="https://webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+  <script src="https://blockly.webduino.io/webduino-blockly.js"></script>
+  <script src="https://blockly.webduino.io/lib/runtime.min.js"></script>
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  
+</head>
+
+<body>
+  <div><div id="show">
+    <span>溫度：</span><span id="temperature">0</span>℃<br>
+    <span>濕度：</span><span id="humidity">0</span> %<br>
+    <br>
+    <div id="chart_div1" style="height: 120px; display:inline-block;"></div>
+    <div id="chart_div" style="width: 100%; height: 400px;"></div>
+  </div></div>
+  
+  
+  <script>
+	  var areachart = {};
+	  areachart.areachart = false;
+	  areachart.origin = [
+		["Time", "temperature"]
+	  ];
+	
+	function myFunction() {
+	  google.load("visualization", "1", {
+		packages: ["corechart"],
+		callback: function() {
+		  areachart.areachart = true;
+		}
+	  });
+	}
+
+	  function drawAreaChart(d) {
+		if (!Array.isArray(d)) {
+		  return;
+		}
+		var data = google.visualization.arrayToDataTable(d);
+		var options = {
+		  title: "",
+		  hAxis: {title: "",titleTextStyle: {color: "#333"}},
+		 vAxis: {minValue: 0},
+		  chartArea: {top: 50,left: 50,width: "70%",height: "70%"},
+		  colors: ['#ff0000', '#0000ff']
+		};
+		var code = new google.visualization.AreaChart(document.getElementById("chart_div"));
+		return code.draw(data, options);
+	  }	
+	
+	function drawChart(rand){
+		document.getElementById("temperature").innerHTML = rand;
+		var time = new Date();
+		var ts = time.getSeconds();
+		var tm = time.getMinutes();
+		var th = time.getHours();
+		var a = [];
+		if (areachart.areachart) {
+		  document.getElementById("chart_div").style.display="block";
+		  document.getElementById("chart_div1").style.display="none";
+		  a[0] = th + ":" + tm + ":" + ts;
+		  a[1] = rand;
+		  areachart.origin.push(a);
+		  drawAreaChart(areachart.origin);
+		}
+	  };
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>BRAILLE</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body style="background-color: #92cebc">
+	<div id="change_Page_SingIn" class="text-center">
+		  <img src="img/SingIn_Top.PNG" class="rounded" style="margin-top: 60px;margin-bottom: 30px">
+		  <br/>
+		  <img id="SignUp" src="img/SingIn_Btn_SignUp.PNG" class="rounded" style="margin-bottom: 30px">
+		  <br/>
+		  <img id="SignIn" src="img/SingIn_Btn_SignIn.PNG" class="rounded" style="margin-bottom: 30px">
+		  <br/>
+		  <img src="img/SingIn_Btn_HowToUse.PNG" class="rounded" style="margin-bottom: 15px">
+		  <br/>
+		  <img src="img/SingIn_Btn_ContentUs.PNG" class="rounded" style="margin-right: 10px">
+	</div>
+	
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+
+	<script>
+		//轉只到Sing Up頁面
+		$(document).ready(function(){
+		  $('#SignUp').on("click", function(){
+			 window.location = "./SignUp.html"
+		  });
+
+		  $('#SignIn').on("click", function(){
+			 window.location = "./SignIn_LogIn.html"
+		  });
+		});
+	</script>	
+
+</body>
+
+</html>

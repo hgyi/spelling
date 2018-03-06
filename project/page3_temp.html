@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Monitor</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+    <!-- Theme CSS -->
+    <link href="css/grayscale.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+    <!-- Monitor Section -->
+    <section class="container  text-center">
+		<form class="form-horizontal">
+			<div class="row">
+				<div class="form-group" style="border-style: solid;padding-bottom: 20px;padding-top: 20px;margin-bottom: 20px;margin-right: 0px;margin-left: 0px;margin-top: 20px;">
+					<label class="control-label col-md-2">Count down：</label>
+					<div class="col-md-9">
+						<input id="countdown" class="form-control" disabled>
+					</div>
+				</div>
+				<div class="form-group" style="border-style: solid;padding-bottom: 20px;padding-top: 20px;margin-bottom: 20px;margin-right: 0px;margin-left: 0px;margin-top: 20px;">
+					<label class="control-label col-md-2">Timer：</label>
+					<div class="col-md-9">
+						<input id="timer" class="form-control" disabled>
+					</div>
+				</div>
+				<div class="form-group" style="border-style: solid;padding-bottom: 20px;padding-top: 20px;margin-bottom: 20px;margin-right: 0px;margin-left: 0px;margin-top: 20px;">
+					<div id="chart_div1" style="height: 120px; display:inline-block;"></div>
+					<div id="chart_div" style="width: 100%; height: 400px;"></div>
+					<!-- <label class="control-label col-md-2">Pressure Value：</label> -->
+					<!-- <div class="col-md-9"> -->
+						<!-- <input id="pressure" class="form-control" disabled> -->
+					<!-- </div> -->
+					<!-- <img class="col-centered featurette-image img-responsive center-block" id="Electrocardiogram" src="img/Electrocardiogram.jpg"> -->
+				</div>
+				<div class="form-group" style="border-style: solid;padding-bottom: 20px;padding-top: 20px;margin-bottom: 20px;margin-right: 0px;margin-left: 0px;">
+					<input id="postSmtBtn" type="button" class="btn btn-primary" value="OK">
+					<input id="continueSmtBtn" type="button" class="btn btn-danger" value="Continue">
+					<input id="postHistoryBtn" type="button" class="btn btn-default" value="History List">
+					<input id="signoutSmtBtn" type="button" class="btn btn-warning" value="Signout">
+					
+				</div>
+			</div>
+		</form>
+    </section>
+
+	
+	
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+	<!-- webduino -->
+	<script src="https://webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+	<script src="https://blockly.webduino.io/webduino-blockly.js"></script>
+	<script src="https://blockly.webduino.io/lib/runtime.min.js"></script>
+	
+	<!-- Google Api -->
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>	
+	
+	<!-- Firebase -->
+	<script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+	
+	<script>
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyDat391LvRdgDDtNmRi0m-PUHB_resZf60",
+			authDomain: "webduino-c3ca5.firebaseapp.com",
+			databaseURL: "https://webduino-c3ca5.firebaseio.com",
+			projectId: "webduino-c3ca5",
+			storageBucket: "webduino-c3ca5.appspot.com",
+			messagingSenderId: "967639627576"
+		};
+		firebase.initializeApp(config);
+		var database = firebase.database();	
+		
+		// Initialize Webduino Prop
+		var shock;
+		var shockStatus = "on";
+		var shockCount = 0;
+		var DefaultTime = 10;
+		var timerSeconds = 0;
+		
+		//Google Chart
+		var areachart = {};
+		areachart.areachart = false;
+		areachart.origin = [
+			["Time", ""]
+		];
+		
+		function myFunction() {
+		  google.load("visualization", "1", {
+			packages: ["corechart"],
+			callback: function() {
+			  areachart.areachart = true;
+			}
+		  });
+		}
+		
+		function drawAreaChart(d) {
+			if (!Array.isArray(d)) {
+			  return;
+			}
+			var data = google.visualization.arrayToDataTable(d);
+			var options = {
+			  title: "",
+			  hAxis: {title: "",titleTextStyle: {color: "#333"}},
+			  vAxis: {minValue: 0},
+			  chartArea: {top: 50,left: 50,width: "70%",height: "70%"},
+			  colors: ['#ff0000', '#0000ff']
+			};
+			var code = new google.visualization.AreaChart(document.getElementById("chart_div"));
+			return code.draw(data, options);
+		}
+		
+		function drawChart(rand){
+			var time = new Date();
+			var ts = time.getSeconds();
+			var tm = time.getMinutes();
+			var th = time.getHours();
+			var a = [];
+			if (areachart.areachart) {
+			  document.getElementById("chart_div").style.display="block";
+			  document.getElementById("chart_div1").style.display="none";
+			  a[0] = th + ":" + tm + ":" + ts;
+			  a[1] = rand;
+			  areachart.origin.push(a);
+			  drawAreaChart(areachart.origin);
+			}
+		};
+		
+		//取得登入資訊
+		var loginUser;
+		firebase.auth().onAuthStateChanged(function(user) {
+		  if (user) {
+			loginUser = user;
+			console.log("User is logined", user)
+		  } else {
+			loginUser = null;
+			alert("User is not logined yet.");
+			window.location = "./page2.html"
+		  }
+		});
+		
+		//新增Data至Firebase
+		var postSmtBtn = document.getElementById("postSmtBtn");
+		postSmtBtn.addEventListener("click", function(){
+			var postRef = firebase.database().ref('/posts/' + loginUser.uid);
+			postRef.push().set({
+			uid: loginUser.uid,
+			timeSeconds: timerSeconds
+		  }).then(function(){
+			alert("新增成功");
+		  }).catch(function(err){
+			alert("新增錯誤：",err);
+		  });
+		  
+		  //重新開始計時
+		  timerReload();
+		  
+		  timerSeconds = 0;
+		});
+
+		setInterval(function () {
+			timerSeconds += 1;
+			$('#timer').val(formatTime(timerSeconds));
+		}, 1000);		
+
+		//當按下繼續按鈕後，停止震動，時間繼續計算
+		var continueSmtBtn = document.getElementById("continueSmtBtn");
+		continueSmtBtn.addEventListener("click",function(){
+			boardReady({device: 'y8v9'}, function (board) {
+			  board.systemReset();
+			  board.samplingInterval = 20;
+			  led = getLed(board, 6);
+			  led.off();
+			  
+			  photocell = getPhotocell(board, 3);
+			  photocell.on(function(val){
+				photocell.detectedVal = val;
+				//$('#pressure').val(photocell.detectedVal);
+				drawChart(Math.floor((photocell.detectedVal * 10) + 1));
+			  });
+			  
+			  /*
+			  shock = getShock(board, 10);
+			  shock.on("high", function(){
+				shockCount = shockCount + 1;
+				if (shockCount % 2 == 0){
+					$('#Electrocardiogram').attr("src","./img/Electrocardiogram.jpg")
+				} else {
+					$('#Electrocardiogram').attr("src","./img/Electrocardiogram.gif")
+				}
+			  });
+			  */
+			});
+			
+			//重新開始計時
+			timerReload();
+		},false);		
+		
+		
+		//登出
+		var signoutSmtBtn = document.getElementById("signoutSmtBtn");
+		signoutSmtBtn.addEventListener("click",function(){
+			firebase.auth().signOut().then(function() {
+				console.log("User sign out!");
+			}, function(error) {
+			console.log("User sign out error!");
+			})
+		},false);
+
+		//連結至History List
+		var postHistoryBtn = document.getElementById("postHistoryBtn");
+		postHistoryBtn.addEventListener("click",function(){
+			window.location = "./page4.html"
+		},false);
+		
+		//Webduino 程式
+		function timerReload(){
+			boardReady({device: 'y8v9'}, function (board) {
+			  board.systemReset();
+			  board.samplingInterval = 20;
+			  led = getLed(board, 6);
+			  
+			  var time = DefaultTime;
+			  var timerThread = setInterval(function () {
+				 time -= 1;
+				 $('#countdown').val(formatTime(time));
+				 if (time == 0) {
+				   led.on();
+				   clearInterval(timerThread);
+				 }
+			  }, 1000);
+			  
+			  var detectedVal = undefined;
+			  photocell = getPhotocell(board, 3);
+			  setInterval(function () {
+				  if (detectedVal == undefined)
+					drawChart(0);
+			  }, 1000);
+			  photocell.on(function(val){
+				photocell.detectedVal = val;
+				detectedVal = val;
+				//$('#pressure').val(photocell.detectedVal);
+				drawChart(Math.floor((photocell.detectedVal * 10) + 1));
+				detectedVal = undefined;
+			  });
+			  
+			  /*
+			  shock = getShock(board, 10);
+			  shock.on("high", function(){
+				shockCount = shockCount + 1;
+				if (shockCount % 2 == 0){
+					$('#Electrocardiogram').attr("src","./img/Electrocardiogram.jpg")
+				} else {
+					$('#Electrocardiogram').attr("src","./img/Electrocardiogram.gif")
+				}
+			  });
+			  */
+			});
+		}
+		
+		timerReload();
+		myFunction();
+		
+		//將秒轉乘時分秒
+		function formatTime(seconds) {
+			var h = Math.floor(seconds / 3600),
+				m = Math.floor(seconds / 60) % 60,
+				s = seconds % 60;
+			if (h < 10) h = "0" + h;
+			if (m < 10) m = "0" + m;
+			if (s < 10) s = "0" + s;
+			return h + ":" + m + ":" + s;
+		}
+	</script>	
+
+</body>
+
+</html>
