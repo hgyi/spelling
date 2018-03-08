@@ -20,7 +20,8 @@
 </head>
 
 <body style="background-color: #ffc299">
-	<p id="word" style="margin-top: 250px;width: 100%;text-align:center;font-size: 56px;font-weight: 600;color:white">APPLE</p>
+    <div><span id="demo-area-01-show">123</span></div>
+	<p id="word" style="margin-top: 250px;width: 100%;text-align:center;font-size: 56px;font-weight: 600;color:white"></p>
     <div id="BarilleQuestionEasy_Btn_Next" class="text-center">
         <img src="img/BarilleQuestionEasy_Btn_Next.png" class="rounded" style="margin-top: 150px;width:  70%;">
     </div>
@@ -38,10 +39,15 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
 	<!-- google api -->
-	<script src="http://www.google.com/jsapi"></script>
-	
+    <script src="http://www.google.com/jsapi"></script>
+    <!-- webduino api -->
+    <script src="http://blockly.webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+    <script src="http://blockly.webduino.io/lib/webduino-blockly.js"></script>
+    <script src="http://blockly.webduino.io/lib/runtime.min.js"></script> 
+    
 	<script>
 		//計算正確數字以及目前多少題目
+        var rfid;
 		var questionCount = 1;
 		var answerCorectCount = 0;
 		
@@ -50,31 +56,66 @@
 
 		var randWord =  ["Apple","Banana","Cat","Dog","Egg","Foxy"];
 		var answerWord = randWord[Math.floor((Math.random() * 5))];
-		
+
 		word.innerHTML = answerWord;
 		audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=" + answerWord + "&tl=en-gb"
 		audio.play();
 		
-		var inputText = "APPLE";
+		var inputText = "";
 	
+        //Webduino reading rfid
+        boardReady({board: 'Smart', device: '10QmRmEd', transport: 'mqtt'}, function (board) {
+            board.systemReset();
+            board.samplingInterval = 50;
+            rfid = getRFID(board);
+            rfid.read();
+            rfid.on("enter",function(_uid){
+                rfid._uid = _uid;
+                if(rfid._uid == '04553A7AF54880'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'A';
+                    userAnswerWordAndRepeat('A');
+                }
+                if(rfid._uid == '046B7B7AF54881'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'P';
+                    userAnswerWordAndRepeat('P');
+                }
+                if(rfid._uid == '04DB261AF54880'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'L';
+                    userAnswerWordAndRepeat('L');
+                }
+                if(rfid._uid == '0485677AF54881'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'E';
+                    userAnswerWordAndRepeat('E');
+                }
+                //document.getElementById("demo-area-01-show").innerHTML = inputText;
+            });
+        });
+
 		//Next Button
 		var nextBtn = document.getElementById("BarilleQuestionEasy_Btn_Next");
 		nextBtn.addEventListener("click",function(){
-			answerWord = randWord[Math.floor((Math.random() * 5))];
-			
-			word.innerHTML = answerWord;
-			audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=" + answerWord + "&tl=en-gb"
-			audio.play();
-		
-			if (answerWord === inputText){
-				answerCorectCount++;
-			}
-			
-			questionCount++;
+			if (answerWord.toUpperCase() === inputText){
+                answerWord = randWord[Math.floor((Math.random() * 5))];
+                word.innerHTML = answerWord;
+                audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=Excellent Next " + answerWord + "&tl=en-gb"
+                audio.play();
+            
+                questionCount++;
+			} else {
+                audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=No Correct Please try again&tl=en-gb"
+			    audio.play();
+            }
+            inputText = '';
 		},false);		
 		
-		
-	
+		function userAnswerWordAndRepeat(word)
+        {
+            inputText += word;
+            audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=" + word + "&tl=en-gb"
+            audio.play();
+        }
+        
+
 		/*
         // Initialize Firebase
         var config = {
