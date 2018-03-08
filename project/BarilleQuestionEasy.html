@@ -58,7 +58,7 @@
 		var answerWord = randWord[Math.floor((Math.random() * 5))];
 
 		word.innerHTML = answerWord;
-		audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=" + answerWord + "&tl=en-gb"
+		audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=2&idx=0&textlen=32&client=tw-ob&q=" + answerWord + "&tl=en-gb"
 		audio.play();
 		
 		var inputText = "";
@@ -97,12 +97,12 @@
 			if (answerWord.toUpperCase() === inputText){
                 answerWord = randWord[Math.floor((Math.random() * 5))];
                 word.innerHTML = answerWord;
-                audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=Excellent Next " + answerWord + "&tl=en-gb"
+                audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=2&idx=0&textlen=32&client=tw-ob&q=Excellent Next " + answerWord + "&tl=en-gb"
                 audio.play();
             
                 questionCount++;
 			} else {
-                audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=No Correct Please try again&tl=en-gb"
+                audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=2&idx=0&textlen=32&client=tw-ob&q=No Correct Please try again&tl=en-gb"
 			    audio.play();
             }
             inputText = '';
@@ -111,7 +111,7 @@
 		function userAnswerWordAndRepeat(word)
         {
             inputText += word;
-            audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q=" + word + "&tl=en-gb"
+            audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=2&idx=0&textlen=32&client=tw-ob&q=" + word + "&tl=en-gb"
             audio.play();
         }
         
