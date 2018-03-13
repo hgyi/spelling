@@ -34,40 +34,44 @@
                 <a class="navbar-brand" href="#"></a>
             </div>
                 <div class="navbar-inverse side-collapse-left in">
-
-
                     <div class="text-center">
-                      <img src="img/SingUp_Top.PNG" class="rounded" style="margin-top: 40px">
+                      <img src="img/SingUp_Top.PNG" class="rounded" style="margin-top: 10px">
                     </div>
-
                     <center><h3>Leo</h3></center>
-
-                　 <nav role="navigation" class="navbar-collapse">
+                    <img id="Home" src="img/menu/Home.PNG" class="rounded" style="width: 55%; margin-top: 40px">
+                    <img id="PersonalInformation" src="img/menu/PersonalInformation.PNG" class="rounded" style="width: 95%; margin-top: 30px">
+                    <img id="LearningRecord" src="img/menu/LearningRecord.PNG" class="rounded" style="width: 83%; margin-top: 30px">
+                    <img id="Password" src="img/menu/Password.PNG" class="rounded" style="width: 60%; margin-top: 30px">
+                    <img src="img/menu/hr.PNG" class="rounded" style="width: 100%; margin-top: 30px">
+                    <img id="LogOut" src="img/menu/LogOut.PNG" class="rounded" style="width: 55%; margin-top: 30px">
+                    <!--
+                　 <nav role="navigation" class="navbar-collapse" style="margin-top: 0px;">
                 　 　 <ul class="nav navbar-nav navbar-left">
-                　 　 　 <li><a href="./BarilleHome.html" class="fa fa-circle">&nbsp;&nbsp;Home</a></li>
+                　 　 　 <li><a href="./BarilleHome.html" class="fa fa-home">&nbsp;&nbsp;Home</a></li>
                 　 　 　 <li><a href="#" class="fa fa-user">&nbsp;&nbspPersonal Information</a></li>
-                　 　 　 <li><a href="#" class="fa fa-circle">&nbsp;&nbspLearning Record</a></li>
+                　 　 　 <li><a href="#" class="fa fa-folder-o">&nbsp;&nbspLearning Record</a></li>
                 　 　 　 <li><a href="#" class="fa fa-lock">&nbsp;&nbspPassword</a></li>
-                         <HR>
-                　 　 　 <li><a id="a_LogOut" class="fa fa-circle">&nbsp;&nbsp;Log Out</a></li>
+                        <HR>
+                　 　 　 <li><a id="a_LogOut" class="fa fa-asterisk">&nbsp;&nbsp;Log Out</a></li>
                 　 　 </ul>
                 　 </nav>
+                    -->
                 </div>
         </div>
     </nav>
 
 
 	<div id="Homt_Btn_Foods" class="text-center">
-		<img src="img/Homt_Btn_Foods.png" class="rounded" style="margin-top: 50px;width:  100%;">
+		<img src="img/Homt_Btn_Foods.png" class="rounded" style="margin-top: 50px;width:  100%; height: 150px" >
 	</div>
     <div id="Homt_Btn_Traffic" class="text-center">
-        <img src="img/Homt_Btn_Traffic.png" class="rounded" style="width:  100%;">
+        <img src="img/Homt_Btn_Traffic.png" class="rounded" style="width:  100%; height: 150px">
     </div>
     <div id="Homt_Btn_Stationery" class="text-center">
-        <img src="img/Homt_Btn_Stationery.png" class="rounded" style="width:  100%;">
+        <img src="img/Homt_Btn_Stationery.png" class="rounded" style="width:  100%; height: 150px">
     </div>
     <div id="Homt_Btn_Animals" class="text-center">
-        <img src="img/Homt_Btn_Animals.png" class="rounded" style="width:  100%;">
+        <img src="img/Homt_Btn_Animals.png" class="rounded" style="width:  100%; height: 150px">
     </div>
 
 
@@ -120,7 +124,7 @@
 
 
         //登出按鈕
-        var signoutSmtBtn = document.getElementById("a_LogOut");
+        var signoutSmtBtn = document.getElementById("LogOut");
         signoutSmtBtn.addEventListener("click",function(){
             firebase.auth().signOut().then(function() {
                 console.log("User sign out!");
@@ -129,10 +133,19 @@
             })
         },false);
 		
-		
-		  $('#Homt_Btn_Foods').on("click", function(){
-			 window.location = "./BarilleQuestionEasy.html"
-		  });		
+		//分類
+        $('#Homt_Btn_Foods').on("click", function(){
+            window.location = "./BarilleLevel.html?type=foods"
+        });	
+        $('#Homt_Btn_Traffic').on("click", function(){
+            window.location = "./BarilleLevel.html?type=traffic"
+        });
+        $('#Homt_Btn_Stationery').on("click", function(){
+            window.location = "./BarilleLevel.html?type=stationery"
+        });	
+        $('#Homt_Btn_Animals').on("click", function(){
+            window.location = "./BarilleLevel.html?type=animals"
+        });	 	
 	</script>	
 
     <style type="text/css">
@@ -151,8 +164,7 @@
              left:0;
              width:70%;
              position:fixed;
-             overflow:hidden;
-             ransition:width .4s;
+             overflow:hidden
            }
            .side-collapse-left.in {
               width:0;

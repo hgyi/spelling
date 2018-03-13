@@ -17,15 +17,15 @@
 
 <body style="background-color: #92cebc">
 	<div id="change_Page_SingIn" class="text-center">
-		  <img src="img/SingIn_Top.PNG" class="rounded" style="margin-top: 60px;margin-bottom: 30px">
+		  <img src="img/SingIn_Top.PNG" class="rounded" style="margin-top: 30px;margin-bottom: 30px">
 		  <br/>
-		  <img id="SignUp" src="img/SingIn_Btn_SignUp.PNG" class="rounded" style="margin-bottom: 30px">
+		  <img id="SignUp" src="img/SingIn_Btn_SignUp.PNG" class="rounded" style="margin-bottom: 20px">
 		  <br/>
-		  <img id="SignIn" src="img/SingIn_Btn_SignIn.PNG" class="rounded" style="margin-bottom: 30px">
+		  <img id="SignIn" src="img/SingIn_Btn_SignIn.PNG" class="rounded" style="margin-bottom: 20px">
 		  <br/>
-		  <img src="img/SingIn_Btn_HowToUse.PNG" class="rounded" style="margin-bottom: 15px">
+		  <img id="HowToUse" src="img/SingIn_Btn_HowToUse.PNG" class="rounded" style="margin-bottom: 15px">
 		  <br/>
-		  <img src="img/SingIn_Btn_ContentUs.PNG" class="rounded" style="margin-right: 10px">
+		  <img id="ContentUs" src="img/SingIn_Btn_ContentUs.PNG" class="rounded" style="margin-right: 10px">
 	</div>
 	
 
@@ -43,9 +43,14 @@
 		  $('#SignUp').on("click", function(){
 			 window.location = "./SignUp.html"
 		  });
-
 		  $('#SignIn').on("click", function(){
 			 window.location = "./SignIn_LogIn.html"
+		  });
+		  $('#HowToUse').on("click", function(){
+			 window.location = "./HowToUse.html"
+		  });
+		  $('#ContentUs').on("click", function(){
+			 window.location = "./ContentUs.html"
 		  });
 		});
 	</script>	

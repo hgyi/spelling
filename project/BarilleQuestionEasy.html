@@ -20,13 +20,13 @@
 </head>
 
 <body style="background-color: #ffc299">
-    <div><span id="demo-area-01-show">123</span></div>
-	<p id="word" style="margin-top: 250px;width: 100%;text-align:center;font-size: 56px;font-weight: 600;color:white"></p>
-    <div id="BarilleQuestionEasy_Btn_Next" class="text-center">
-        <img src="img/BarilleQuestionEasy_Btn_Next.png" class="rounded" style="margin-top: 150px;width:  70%;">
+    <img src="img/questionBtn/Exit.png" class="rounded" style="width: 20%;">
+	<p id="word" style="margin-top: 100px; margin-bottom: 120px;width: 100%;text-align:center;font-size: 56px;font-weight: 600;color:white"></p>
+    <div id="nextBtn" class="text-center">
+        <img id="nextImg" src="img/questionBtn/next_orange.png" class="rounded" style="width:  70%;">
     </div>
-    <div id="BarilleQuestionEasy_Btn_End" class="text-center">
-        <img src="img/BarilleQuestionEasy_Btn_End.png" class="rounded" style="margin-top: 20px;width:  70%;">
+    <div id="backBtn" class="text-center">
+        <img src="img/questionBtn/back.png" class="rounded" style="margin-top: 20px;width: 20%;">
     </div>
 	<audio id="audioPlay" src="" hidden></audio> 
 	
@@ -50,15 +50,52 @@
         var rfid;
 		var questionCount = 1;
 		var answerCorectCount = 0;
+        var url = new URL(window.location.href);
+        var type = url.searchParams.get("type");
+        var randWord = [];
 		
+        if (type === "foods") {
+            $("body").css("background-color","#ffc299");
+            $("#nextImg").attr("src","img/questionBtn/next_orange.png");
+        } else if (type === "traffic") {
+            $("body").css("background-color","#3c7faf");
+            $("#nextImg").attr("src","img/questionBtn/next_blue.png");
+        } else if (type === "stationery") {
+            $("body").css("background-color","#b6dab4");
+            $("#nextImg").attr("src","img/questionBtn/next_green.png");
+        } else if (type === "animals") {
+            $("body").css("background-color","#f19b97");
+            $("#nextImg").attr("src","img/questionBtn/next_red.png");
+        }
+        
 		var word = document.getElementById("word");
 		var audio = document.getElementById("audioPlay");
 
-		var randWord =  ["Apple","Banana","Cat","Dog","Egg","Foxy"];
-		var answerWord = randWord[Math.floor((Math.random() * 5))];
-
+        switch(type) 
+        {
+            case "foods":
+                randWord =  ["Apple","Cake"];
+            break;
+            case "traffic":
+                randWord =  ["Bike","Car"];
+            break;
+            case "stationery":
+                randWord =  ["Book","Bag"];
+            break;
+            case "animals":
+                randWord =  ["Bear","Bee"];
+            break;
+        }
+        
+		var answerWord = randWord[Math.floor((Math.random() * randWord.length))];
+        var readAnswerWord = "";
+        for (var i=0;i<answerWord.length;i++){
+            readAnswerWord += "\"" + answerWord[i] + "\" ";
+        }
 		word.innerHTML = answerWord;
-		audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=2&idx=0&textlen=32&client=tw-ob&q=" + answerWord + "&tl=en-gb"
+        
+        audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=" + answerWord + "\n" + readAnswerWord + "&language=en&speed=0.5"
+
 		audio.play();
 		
 		var inputText = "";
@@ -92,17 +129,22 @@
         });
 
 		//Next Button
-		var nextBtn = document.getElementById("BarilleQuestionEasy_Btn_Next");
+		var nextBtn = document.getElementById("nextBtn");
 		nextBtn.addEventListener("click",function(){
-			if (answerWord.toUpperCase() === inputText){
-                answerWord = randWord[Math.floor((Math.random() * 5))];
+			if (answerWord.toUpperCase() == inputText){
+                answerWord = randWord[Math.floor((Math.random() * randWord.length))];
+                readAnswerWord = "";
+                for (var i=0;i<answerWord.length;i++){
+                    readAnswerWord += "\"" + answerWord[i] + "\" ";
+                }
                 word.innerHTML = answerWord;
-                audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=2&idx=0&textlen=32&client=tw-ob&q=Excellent Next " + answerWord + "&tl=en-gb"
+                audio.src =  "https://google-translate-proxy.herokuapp.com/api/tts?query=" + inputText + " Excellent Next " + answerWord + "\n" + readAnswerWord + "&language=en&speed=0.5"
                 audio.play();
             
                 questionCount++;
 			} else {
-                audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=2&idx=0&textlen=32&client=tw-ob&q=No Correct Please try again&tl=en-gb"
+
+                audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=No Correct Please try again " + answerWord + "&language=en&speed=0.5"
 			    audio.play();
             }
             inputText = '';
@@ -111,8 +153,9 @@
 		function userAnswerWordAndRepeat(word)
         {
             inputText += word;
-            audio.src = "http://translate.google.com/translate_tts?ie=UTF-8&total=2&idx=0&textlen=32&client=tw-ob&q=" + word + "&tl=en-gb"
+            audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=" + word + "&language=en&speed=1"
             audio.play();
+            document.getElementById("demo-area-01-show").innerHTML = inputText;
         }
         
 

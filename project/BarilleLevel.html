@@ -21,10 +21,10 @@
 
 <body style="background-color: #ffc299">
 	<div id="BarilleLevel_Btn_Easy" class="text-center">
-		<img src="img/BarilleLevel_Btn_Easy.png" class="rounded" style="margin-top: 180px;width: 80%;">
+		<img id="imgEasy" src="img/BarilleLevel_Btn_Easy.png" class="rounded" style="margin-top: 130px;width: 50%;">
 	</div>
     <div id="BarilleLevel_Btn_Difficult" class="text-center">
-        <img src="img/BarilleLevel_Btn_Difficult.png" class="rounded" style="margin-top: 50px;width:  80%;">
+        <img id="imgDifficult" src="img/BarilleLevel_Btn_Difficult.png" class="rounded" style="margin-top: 50px;width:  50%;">
     </div>
 
     <!-- jQuery -->
@@ -37,6 +37,33 @@
     <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
 
 	<script>
+
+        var url = new URL(window.location.href);
+        var type = url.searchParams.get("type");
+        
+        if (type === "foods") {
+            $("body").css("background-color","#ffc299");
+            $("#imgEasy").attr("src","img/level/Easy_Orange.png");
+            $("#imgDifficult").attr("src","img/level/Difficult_Orange.png");
+        } else if (type === "traffic") {
+            $("body").css("background-color","#3c7faf");
+            $("#imgEasy").attr("src","img/level/Easy_Blue.png");
+            $("#imgDifficult").attr("src","img/level/Difficult_Blue.png");
+        } else if (type === "stationery") {
+            $("body").css("background-color","#b6dab4");
+            $("#imgEasy").attr("src","img/level/Easy_Green.png");
+            $("#imgDifficult").attr("src","img/level/Difficult_Green.png");
+        } else if (type === "animals") {
+            $("body").css("background-color","#f19b97");
+            $("#imgEasy").attr("src","img/level/Easy_Red.png");
+            $("#imgDifficult").attr("src","img/level/Difficult_Red.png");
+        }
+
+        $('#BarilleLevel_Btn_Easy').on("click", function(){
+            window.location = "./BarilleQuestionEasy.html?type=" + type
+        });	
+        
+
 		/*
         // Initialize Firebase
         var config = {
