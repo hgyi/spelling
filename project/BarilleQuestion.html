@@ -52,40 +52,49 @@
 		var answerCorectCount = 0;
         var url = new URL(window.location.href);
         var type = url.searchParams.get("type");
+        var level = url.searchParams.get("level");
         var randWord = [];
 		
         if (type === "foods") {
             $("body").css("background-color","#ffc299");
             $("#nextImg").attr("src","img/questionBtn/next_orange.png");
+            
+            if(level === "easy"){
+                randWord =  ["Apple","Cake"];
+            } else {
+                randWord =  ["Lollipop"];
+            }
         } else if (type === "traffic") {
             $("body").css("background-color","#3c7faf");
             $("#nextImg").attr("src","img/questionBtn/next_blue.png");
+
+            if(level === "easy"){
+                randWord =  ["Bike","Car"];
+            } else {
+                randWord =  ["Baggage"];
+            }
         } else if (type === "stationery") {
             $("body").css("background-color","#b6dab4");
             $("#nextImg").attr("src","img/questionBtn/next_green.png");
+
+            if(level === "easy"){
+                randWord =  ["Book","Bag"];
+            } else {
+                randWord =  ["Paper clip"];
+            }
         } else if (type === "animals") {
             $("body").css("background-color","#f19b97");
             $("#nextImg").attr("src","img/questionBtn/next_red.png");
+
+            if(level === "easy"){
+                randWord =  ["Bear","Bee"];
+            } else {
+                randWord =  ["Crocodile"];
+            }
         }
         
 		var word = document.getElementById("word");
 		var audio = document.getElementById("audioPlay");
-
-        switch(type) 
-        {
-            case "foods":
-                randWord =  ["Apple","Cake"];
-            break;
-            case "traffic":
-                randWord =  ["Bike","Car"];
-            break;
-            case "stationery":
-                randWord =  ["Book","Bag"];
-            break;
-            case "animals":
-                randWord =  ["Bear","Bee"];
-            break;
-        }
         
 		var answerWord = randWord[Math.floor((Math.random() * randWord.length))];
         var readAnswerWord = "";
@@ -93,13 +102,12 @@
             readAnswerWord += "\"" + answerWord[i] + "\" ";
         }
 		word.innerHTML = answerWord;
-        
-        audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=" + answerWord + "\n" + readAnswerWord + "&language=en&speed=0.5"
 
+        audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=" + answerWord + 
+                    "\n" + readAnswerWord + "&language=en&speed=0.5"
 		audio.play();
-		
 		var inputText = "";
-	
+
         //Webduino reading rfid
         boardReady({board: 'Smart', device: '10QmRmEd', transport: 'mqtt'}, function (board) {
             board.systemReset();
@@ -138,12 +146,12 @@
                     readAnswerWord += "\"" + answerWord[i] + "\" ";
                 }
                 word.innerHTML = answerWord;
-                audio.src =  "https://google-translate-proxy.herokuapp.com/api/tts?query=" + inputText + " Excellent Next " + answerWord + "\n" + readAnswerWord + "&language=en&speed=0.5"
+                audio.src =  "https://google-translate-proxy.herokuapp.com/api/tts?query=" + inputText + " Excellent Next " + 
+                              answerWord + "\n" + readAnswerWord + "&language=en&speed=0.5"
                 audio.play();
             
                 questionCount++;
 			} else {
-
                 audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=No Correct Please try again " + answerWord + "&language=en&speed=0.5"
 			    audio.play();
             }

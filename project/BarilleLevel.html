@@ -60,9 +60,12 @@
         }
 
         $('#BarilleLevel_Btn_Easy').on("click", function(){
-            window.location = "./BarilleQuestionEasy.html?type=" + type
+            window.location = "./BarilleQuestion.html?type=" + type + "&level=easy"
         });	
         
+        $('#BarilleLevel_Btn_Difficult').on("click", function(){
+            window.location = "./BarilleQuestion.html?type=" + type + "&level=difficult"
+        });	
 
 		/*
         // Initialize Firebase
