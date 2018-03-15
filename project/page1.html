@@ -27,13 +27,44 @@
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <!-- Plugin JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
-
+    <!-- webduino Plugin JavaScript -->
+    <script src="http://blockly.webduino.io/lib/jquery-1.9.1.min.js"></script>
+    <script src="http://blockly.webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+    <script src="http://blockly.webduino.io/lib/webduino-blockly.js"></script>
+    <script src="http://blockly.webduino.io/lib/firebase.js"></script>
 
 	<script>
+        var button;
+        var isPushStart = false;
+
+        //設定第一塊裝置接智慧插座燈泡
+        boardReady('10QmRmEd', function (board) {
+            board.systemReset();
+            board.samplingInterval = 250;
+            button = getButton(board, 16);
+            allReady(); //確認兩塊板子都上線了就執行
+        });
+
+        function allReady(){
+            button.on("pressed", function(){
+                speak(('start up'),["en-US",1,1,1]);
+                isPushStart = true;
+            });
+
+            button.on("longPress", function(){
+                speak(('shutdown'),["en-US",1,1,1]);
+            });
+        }
+
 		//轉只到Page 3頁面
 		$(document).ready(function(){
 		  $('#change_Page_SingIn').on("click", function(){
-			 window.location = "./signIn.html"
+              if (isPushStart){
+                window.location = "./signIn.html"
+              } else {
+                speak(('Trun on the project power'),["en-US",1,1,1]);
+              }
+			 
 		  });
 		});
 	</script>	
