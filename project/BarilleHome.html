@@ -35,9 +35,9 @@
             </div>
                 <div class="navbar-inverse side-collapse-left in">
                     <div class="text-center">
-                      <img src="img/SingUp_Top.PNG" class="rounded" style="margin-top: 10px">
+                      <img id="imageSelect" src="img/SingUp_Top.PNG" class="rounded" style="margin-top: 10px; width:133px; height:132px ">
                     </div>
-                    <center><h3>Leo</h3></center>
+                    <center><h3 id="name">Leo</h3></center>
                     <img id="Home" src="img/menu/Home.PNG" class="rounded" style="width: 55%; margin-top: 40px">
                     <img id="PersonalInformation" src="img/menu/PersonalInformation.PNG" class="rounded" style="width: 95%; margin-top: 30px">
                     <img id="LearningRecord" src="img/menu/LearningRecord.PNG" class="rounded" style="width: 83%; margin-top: 30px">
@@ -115,6 +115,11 @@
             loginUser = user;
             console.log("User is logined", user);
             
+            var leadsRef = firebase.database().ref('users/' + loginUser.uid).once('value').then(function(snapshot) {
+                $('#imageSelect').attr("src", snapshot.val().photoSticker);
+                $('h3').html(snapshot.val().name)
+            });
+
           } else {
             loginUser = null;
             alert("User is not logined yet.");
