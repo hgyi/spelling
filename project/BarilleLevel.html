@@ -26,7 +26,9 @@
     <div id="BarilleLevel_Btn_Difficult" class="text-center">
         <img id="imgDifficult" src="img/BarilleLevel_Btn_Difficult.png" class="rounded" style="margin-top: 50px;width:  50%;">
     </div>
-
+    <div id="backBtn" class="text-center">
+        <img src="img/questionBtn/back.png" class="rounded" style="margin-top: 20px;width: 20%;">
+    </div>
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.js"></script>
     <!-- Bootstrap Core JavaScript -->
@@ -66,6 +68,12 @@
         $('#BarilleLevel_Btn_Difficult').on("click", function(){
             window.location = "./BarilleQuestion.html?type=" + type + "&level=difficult"
         });	
+        
+        $('#backBtn').on("click", function(){
+            window.location = "./BarilleHome.html";
+        });	
+
+        
 
 		/*
         // Initialize Firebase

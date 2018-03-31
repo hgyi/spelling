@@ -25,9 +25,6 @@
     <div id="nextBtn" class="text-center">
         <img id="nextImg" src="img/questionBtn/next_orange.png" class="rounded" style="width:  70%;">
     </div>
-    <div id="backBtn" class="text-center">
-        <img src="img/questionBtn/back.png" class="rounded" style="margin-top: 20px;width: 20%;">
-    </div>
 	<audio id="audioPlay" src="" hidden></audio> 
 	
     <!-- jQuery -->
@@ -50,11 +47,28 @@
         var rfid;
         var servo;
 		var questionCount = 1;
-		var answerCorectCount = 0;
+        //找Url的參數
         var url = new URL(window.location.href);
         var type = url.searchParams.get("type");
         var level = url.searchParams.get("level");
+        //依據Type 跟 Level 將題目add到randWord
         var randWord = [];
+        //記錄當下的測驗是否正確
+        var isCorrect = false;
+        //於畫面暫存資料，方便一次將資料寫回DB
+        var sentToDBObject = undefined;
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyD543SM0Hz4TZUJfi2rGj4isE0ysSiintE",
+            authDomain: "spelling-5b9a1.firebaseapp.com",
+            databaseURL: "https://spelling-5b9a1.firebaseio.com/",
+            projectId: "spelling-5b9a1",
+            storageBucket: "spelling-5b9a1.appspot.com",
+            messagingSenderId: "249319314175"
+        };
+        firebase.initializeApp(config);
+        var database = firebase.database();   
+
 		
         if (type === "foods") {
             $("body").css("background-color","#ffc299");
@@ -94,26 +108,35 @@
             }
         }
         
+        //顯示題目至畫面上
 		var word = document.getElementById("word");
+        //播放音效(答對或答錯)
 		var audio = document.getElementById("audioPlay");
         
+        //亂數取得一個題目
 		var answerWord = randWord[Math.floor((Math.random() * randWord.length))];
+        //讀取英文單字 以及 拼音
         var readAnswerWord = "";
         for (var i=0;i<answerWord.length;i++){
             readAnswerWord += "\"" + answerWord[i] + "\" ";
         }
 		word.innerHTML = answerWord;
 
-        speak((answerWord + readAnswerWord),["en-US",1,1,0.5]);
+        //第一次進畫面會先念一次題目
+        speak(("How do you spell " + answerWord + readAnswerWord),["en-US",1,1,0.7]);
 
-        /*
+
+        //使用Webduino 已經做好的google語音Api 因次不自行串接
+        /* 
         audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=" + answerWord + 
                     "\n" + readAnswerWord + "&language=en&speed=0.5"
 		audio.play();
         */
+
+        //接RFID的拼字
 		var inputText = "";
 
-        //Webduino reading rfid
+        //Webduino reading rfid 設定磁卡
         boardReady({board: 'Smart', device: '10QmRmEd', transport: 'mqtt'}, function (board) {
             board.systemReset();
             board.samplingInterval = 50;
@@ -124,87 +147,167 @@
                 rfid._uid = _uid;
                 if(rfid._uid == '04553A7AF54880'){
                     //document.getElementById("demo-area-01-show").innerHTML = 'A';
-                    userAnswerWordAndRepeat('A');
+                    userAnswerWordAndRepeat('a');
                 }
-                if(rfid._uid == '046B7B7AF54881'){
-                    //document.getElementById("demo-area-01-show").innerHTML = 'P';
-                    userAnswerWordAndRepeat('P');
+                if(rfid._uid == '0497727AF54880'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'A';
+                    userAnswerWordAndRepeat('b');
                 }
-                if(rfid._uid == '04DB261AF54880'){
-                    //document.getElementById("demo-area-01-show").innerHTML = 'L';
-                    userAnswerWordAndRepeat('L');
+
+                if(rfid._uid == '046E437AF54881'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'A';
+                    userAnswerWordAndRepeat('c');
+                }
+                if(rfid._uid == '04A44B1AF54880'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'A';
+                    userAnswerWordAndRepeat('d');
                 }
                 if(rfid._uid == '0485677AF54881'){
                     //document.getElementById("demo-area-01-show").innerHTML = 'E';
-                    userAnswerWordAndRepeat('E');
+                    userAnswerWordAndRepeat('e');
+                }
+                if(rfid._uid == '047C7B7AF54881'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'A';
+                    userAnswerWordAndRepeat('h');
+                }
+                if(rfid._uid == '04453A7AF54880'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'A';
+                    userAnswerWordAndRepeat('i');
+                }
+                if(rfid._uid == '04B0AA7AF54880'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'A';
+                    userAnswerWordAndRepeat('k');
+                }
+                if(rfid._uid == '04403A7AF54880'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'A';
+                    userAnswerWordAndRepeat('o');
+                }
+                if(rfid._uid == '046B7B7AF54881'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'P';
+                    userAnswerWordAndRepeat('p');
+                }
+                if(rfid._uid == '04DB261AF54880'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'L';
+                    userAnswerWordAndRepeat('l');
+                }
+                if(rfid._uid == '0443447AF54881'){
+                    //document.getElementById("demo-area-01-show").innerHTML = 'L';
+                    userAnswerWordAndRepeat('r');
                 }
                 //document.getElementById("demo-area-01-show").innerHTML = inputText;
             });
         });
 
+
 		//Next Button
 		var nextBtn = document.getElementById("nextBtn");
 		nextBtn.addEventListener("click",function(){
-			if (answerWord.toUpperCase() == inputText){
+			if (answerWord.toLowerCase() == inputText){
+                isCorrect = true;
+                saveData(answerWord.toLowerCase(),isCorrect);
+                audio.src = "music/excellent.mp3"
+			    audio.play();
+
                 answerWord = randWord[Math.floor((Math.random() * randWord.length))];
                 readAnswerWord = "";
                 for (var i=0;i<answerWord.length;i++){
                     readAnswerWord += "\"" + answerWord[i] + "\" ";
                 }
                 word.innerHTML = answerWord;
-                speak((inputText + " Excellent Next " + answerWord + readAnswerWord),["en-US",1,1,0.7]);
-                servoFunction();
 
-                /*
-                audio.src =  "https://google-translate-proxy.herokuapp.com/api/tts?query=" + inputText + " Excellent Next " + 
-                              answerWord + "\n" + readAnswerWord + "&language=en&speed=0.5"
-                audio.play();
-                */
+                //下一題將用audio的listen 等待音效撥放完畢後才開始念下一題的題目
+                //speak((inputText + " Excellent Next " + answerWord + readAnswerWord),["en-US",1,1,0.7]);
+
+                //等接上Webduino Stmart時才會驅動的到馬達
+                //servoFunction();
+
                 questionCount++;
 			} else {
-                speak(("No Correct Please try again " + answerWord),["en-US",1,1,0.5]);
-                /*
-                audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=No Correct Please try again " + answerWord + "&language=en&speed=0.5"
+                isCorrect = false;
+                saveData(answerWord.toLowerCase(),isCorrect);
+                audio.src = "music/error.mp3"
 			    audio.play();
-                */
             }
             inputText = '';
 		},false);		
+
 		
-		function userAnswerWordAndRepeat(word)
-        {
+		function userAnswerWordAndRepeat(word) {
             inputText += word;
-            speak((word),["en-US",1,1,0.5]);
-            /*
-            audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=" + word + "&language=en&speed=1"
-            audio.play();
-            document.getElementById("demo-area-01-show").innerHTML = inputText;
-            */
+            speak(word,["en-US",1,1,0.7]);
         }
 
-        async function servoFunction(){
-                servo.angle = 90;
+        async function servoFunction() {
+                servo.angle = 180;
                 await delay(1);
                 servo.angle = 0;
                 await delay(1);
         }
+
+        function saveData(word,isCorrect) {
+            if (sentToDBObject == undefined) {
+                if (isCorrect) {
+                    sentToDBObject = [{
+                        question: word,
+                        correct: 1,
+                        error: 0
+                    }];
+                } else {
+                    sentToDBObject = [{
+                        question: word,
+                        correct: 0,
+                        error: 1
+                    }];
+                }
+            } else {
+                if (sentToDBObject.find(x => x.question == word) == undefined) {
+                    if (isCorrect) {
+                        sentToDBObject.push({ question:word, error: 0, correct: 1});
+                    } else {
+                        sentToDBObject.push({ question:word, error: 1, correct: 0});
+                    }
+                } else {
+                    if (isCorrect) {
+                        sentToDBObject.find(x => x.question == word).correct += 1;
+                    } else {
+                        sentToDBObject.find(x => x.question == word).error += 1;
+                    }
+                }
+            }
+        }
         
-        $('#exit').on("click", function(){
-            window.location = "./BarilleHome.html"
+        $('#exit').on("click", function() {
+            var txt;
+            var r = confirm("Do you want to record the quiz?");
+            if (r == true) {
+            var postRef = firebase.database().ref('/quiz/' + loginUser.uid);
+            postRef.push().set({
+                uid: loginUser.uid,
+                createTime: Date.now(),
+                quizType: type, 
+                quizLevel: level,
+                questionCount: questionCount,
+                quizData: sentToDBObject
+            }).then(function(){
+                alert("新增成功");
+            }).catch(function(err){
+                alert("新增錯誤：",err);
+            });
+            } else {
+                window.location = "./BarilleHome.html"
+            }            
 		});
 
-		/*
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyD543SM0Hz4TZUJfi2rGj4isE0ysSiintE",
-            authDomain: "spelling-5b9a1.firebaseapp.com",
-            databaseURL: "https://spelling-5b9a1.firebaseio.com/",
-            projectId: "spelling-5b9a1",
-            storageBucket: "spelling-5b9a1.appspot.com",
-            messagingSenderId: "249319314175"
-        };
-        firebase.initializeApp(config);
-        var database = firebase.database();   
+        $("#audioPlay").bind('ended', function(){
+            if (isCorrect) {
+                speak((" Excellent Next How do you spell " + answerWord + readAnswerWord),["en-US",1,1,0.7]);
+            } else {
+                speak(("No Correct Please try again " + answerWord),["en-US",1,1,0.7]);
+            }
+        });
+
+
+
 
         //取得登入資訊
         var loginUser;
@@ -221,7 +324,7 @@
             window.location = "./signIn.html"
           }
         }); 
-		*/
+
 	</script>	
 </body>
 
