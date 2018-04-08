@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>BRAILLE</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.js"></script>
+    <style type="text/css">
+        #totoalPeiChart {
+            width:132px !important;
+            height:133px !important;
+        }
+        .questionTypePeiChart {
+            width:90px !important;
+            height:90px !important;
+        }
+    </style>
+</head>
+
+<body >
+    <div class="row show-grid" style="margin-bottom: 5px;">
+        <div class="col-xs-6">
+            <img id="imageSelect" src="img/SingUp_Top.PNG" class="img-circle" style="margin-top: 30px;width:133px;height:132px;margin-left: 30px;">
+        </div>
+        <div class="col-xs-6">
+            <canvas id="totoalPeiChart"  style="display: block;margin-top: 30px;"></canvas>
+        </div>
+    </div>
+
+    <div class="row show-grid" style="margin-bottom: 10px;">
+        <div class="col-xs-4" align="center">
+            <canvas id="foodsPeiChart"  style="display: block" class="questionTypePeiChart"></canvas>
+        </div>
+        <div class="col-xs-8">
+            <p><b>Foods</b></p>
+            <table>
+                <td align="right">More practice</td><td id="foodsMorePractice" style="padding-left: 10px;"></td><tr/>
+                <td align="right">Correct percent</td><td id="foodsCorrectPercent" style="padding-left: 10px;"></td><tr/>
+                <td align="right">Error percent</td><td id="foodsErrorPercent" style="padding-left: 10px;"></td><tr/>
+            </table>
+        </div>
+    </div>
+
+    <div class="row show-grid" style="margin-bottom: 10px;">
+        <div class="col-xs-4" align="center">
+            <canvas id="trafficPeiChart"  style="display: block" class="questionTypePeiChart"></canvas>
+        </div>
+        <div class="col-xs-8">
+            <p><b>Traffic</b></p>
+            <table>
+                <td align="right">More practice</td><td id="trafficMorePractice" style="padding-left: 10px;"></td><tr/>
+                <td align="right">Correct percent</td><td id="trafficCorrectPercent" style="padding-left: 10px;"></td><tr/>
+                <td align="right">Error percent</td><td id="trafficErrorPercent" style="padding-left: 10px;"></td><tr/>
+            </table>
+        </div>
+    </div>
+
+    <div class="row show-grid" style="margin-bottom: 10px;">
+        <div class="col-xs-4" align="center">
+            <canvas id="stationeryPeiChart"  style="display: block" class="questionTypePeiChart"></canvas>
+        </div>
+        <div class="col-xs-8">
+            <p><b>Stationery</b></p>
+            <table>
+                <td align="right">More practice</td><td id="stationeryMorePractice" style="padding-left: 10px;"></td><tr/>
+                <td align="right">Correct percent</td><td id="stationeryCorrectPercent" style="padding-left: 10px;"></td><tr/>
+                <td align="right">Error percent</td><td id="stationeryErrorPercent" style="padding-left: 10px;"></td><tr/>
+            </table>
+        </div>
+    </div>
+
+    <div class="row show-grid" style="margin-bottom: 10px;">
+        <div class="col-xs-4" align="center">
+            <canvas id="animalsPeiChart"  style="display: block" class="questionTypePeiChart"></canvas>
+        </div>
+        <div class="col-xs-8">
+            <p><b>Animals</b></p>
+            <table>
+                <td align="right">More practice</td><td id="animalsMorePractice" style="padding-left: 10px;"></td><tr/>
+                <td align="right">Correct percent</td><td id="animalsCorrectPercent" style="padding-left: 10px;"></td><tr/>
+                <td align="right">Error percent</td><td id="animalsErrorPercent" style="padding-left: 10px;"></td><tr/>
+            </table>
+        </div>
+    </div>
+    <div id="backBtn" class="text-center">
+        <img src="img/questionBtn/back.png" class="rounded" style="margin-top: 20px;width: 20%;">
+    </div>
+</body>
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+    <script type="text/javascript" src="http://malsup.github.io/jquery.blockUI.js"></script>
+	<script>
+        var quizData = {
+            totalQuestion: 0,
+            foodsCorrect: 0,
+            foodsError: 0,
+            trafficCorrect: 0,
+            trafficError: 0,
+            stationeryCorrect: 0,
+            stationeryError: 0,
+            animalsCorrect: 0,
+            animalsError: 0
+        }
+        var statisticsData = {
+            totalCount:0,
+            totalErrorCount: 0,
+            totalCorrectCount: 0
+        }
+
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyD543SM0Hz4TZUJfi2rGj4isE0ysSiintE",
+            authDomain: "spelling-5b9a1.firebaseapp.com",
+            databaseURL: "https://spelling-5b9a1.firebaseio.com/",
+            projectId: "spelling-5b9a1",
+            storageBucket: "spelling-5b9a1.appspot.com",
+            messagingSenderId: "249319314175"
+        };
+        firebase.initializeApp(config);
+        var database = firebase.database();   
+
+        //取得登入資訊
+        var loginUser;
+        var jsonObj = [];
+        var count = 0;
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            loginUser = user;
+            console.log("User is logined", user);
+            
+            var leadsRef = firebase.database().ref('users/' + loginUser.uid).once('value').then(function(snapshot) {
+                loadingGIF(true);
+                $('#imageSelect').attr("src", snapshot.val().photoSticker);
+                $('h3').html(snapshot.val().name)
+            });
+
+            var readData = firebase.database().ref('quiz/' + loginUser.uid).once('value').then(function(snapshot) {
+                snapshot.forEach(function(childSnapshot) {
+                    if (formatDate(childSnapshot.val().createTime) == formatDate(Date.now())) {
+                        var findTopOneFoodsErrorWord = 0;
+                        var findTopOneTrafficErrorWord = 0;
+                        var findTopOneStationeryErrorWord = 0;
+                        var findTopOneAnimalsErrorWord = 0;
+
+                        quizData.totalQuestion += childSnapshot.val().questionCount;
+                        switch (childSnapshot.val().quizType) {
+                            case 'foods':
+                                childSnapshot.val().quizData.forEach(function(element) {
+                                    if (element.error > findTopOneFoodsErrorWord) {
+                                        $('#foodsMorePractice').html(element.question);
+                                        $('#foodsCorrectPercent').html(Math.round(element.correct/(element.correct+element.error)* 100)+"%");
+                                        $('#foodsErrorPercent').html(Math.round(element.error/(element.correct+element.error)* 100)+"%");
+                                    }                              
+                                    statisticsData.totalCorrectCount += element.correct;
+                                    statisticsData.totalErrorCount += element.error;
+                                    quizData.foodsCorrect += element.correct;
+                                    quizData.foodsError += element.error;
+                                });
+                            break;
+                            case 'traffic':
+                                childSnapshot.val().quizData.forEach(function(element) {
+                                    if (element.error > findTopOneTrafficErrorWord) {
+                                        $('#trafficMorePractice').html(element.question);
+                                        $('#trafficCorrectPercent').html(Math.round(element.correct/(element.correct+element.error)* 100)+"%");
+                                        $('#trafficErrorPercent').html(Math.round(element.error/(element.correct+element.error)* 100)+"%");
+                                    }        
+                                    statisticsData.totalCorrectCount += element.correct;
+                                    statisticsData.totalErrorCount += element.error;
+                                    quizData.trafficCorrect += element.correct;
+                                    quizData.trafficError += element.error;
+                                });
+                            break;
+                            case 'stationery':
+                                childSnapshot.val().quizData.forEach(function(element) {
+                                    if (element.error > findTopOneStationeryErrorWord) {
+                                        $('#stationeryMorePractice').html(element.question);
+                                        $('#stationeryCorrectPercent').html(Math.round(element.correct/(element.correct+element.error)* 100)+"%");
+                                        $('#stationeryErrorPercent').html(Math.round(element.error/(element.correct+element.error)* 100)+"%");
+                                    }        
+                                    statisticsData.totalCorrectCount += element.correct;
+                                    statisticsData.totalErrorCount += element.error;
+                                    quizData.stationeryCorrect += element.correct;
+                                    quizData.stationeryError += element.error;
+                                });
+                            break;
+                            case 'animals':
+                                childSnapshot.val().quizData.forEach(function(element) {
+                                    if (element.error > findTopOneAnimalsErrorWord) {
+                                        $('#animalsMorePractice').html(element.question);
+                                        $('#animalsCorrectPercent').html(Math.round(element.correct/(element.correct+element.error)* 100)+"%");
+                                        $('#animalsErrorPercent').html(Math.round(element.error/(element.correct+element.error)* 100)+"%");
+                                    }        
+                                    statisticsData.totalCorrectCount += element.correct;
+                                    statisticsData.totalErrorCount += element.error;
+                                    quizData.animalsCorrect += element.correct;
+                                    quizData.animalsError += element.error;
+                                });
+                            break;
+                        }
+                    }
+                    var childData = childSnapshot.val();
+                });
+                statisticsData.totalCount = statisticsData.totalCorrectCount + statisticsData.totalErrorCount;
+
+                //Initial CreatePeiChart
+                //右上角的圓餅圖
+                creatPeiChart($("#totoalPeiChart"),
+                (statisticsData.totalErrorCount/statisticsData.totalCount * 100),
+                (statisticsData.totalCorrectCount/statisticsData.totalCount * 100),
+                'pie');
+                //foods的圓餅圖
+                creatPeiChart($("#foodsPeiChart"),
+                (quizData.foodsError/(quizData.foodsCorrect + quizData.foodsError) *100),
+                (quizData.foodsCorrect/(quizData.foodsCorrect + quizData.foodsError) *100),
+                'doughnut');
+                //traffic的圓餅圖
+                creatPeiChart($("#trafficPeiChart"),
+                (quizData.trafficError/(quizData.trafficCorrect + quizData.trafficError) *100),
+                (quizData.trafficCorrect/(quizData.trafficCorrect + quizData.trafficError) *100),
+                'doughnut');
+                //stationery的圓餅圖
+                creatPeiChart($("#stationeryPeiChart"),
+                (quizData.stationeryError/(quizData.stationeryCorrect + quizData.stationeryError) *100),
+                (quizData.stationeryCorrect/(quizData.stationeryCorrect + quizData.stationeryError) *100),
+                'doughnut');
+                //traffic的圓餅圖
+                creatPeiChart($("#animalsPeiChart"),
+                (quizData.animalsError/(quizData.animalsCorrect + quizData.animalsError) *100),
+                (quizData.animalsCorrect/(quizData.animalsCorrect + quizData.animalsError) *100),
+                'doughnut');
+
+                loadingGIF(false);
+            });
+            } else {
+                loginUser = null;
+                alert("User is not logined yet.");
+                window.location = "./signIn.html"
+            }
+            
+        }); 
+
+
+        function creatPeiChart(chartDiv,totalErrorPercent,totalCorrectPercent,peiType) {
+            var myChart = new Chart(chartDiv, {
+                type: peiType,
+                data: {
+                    labels: ["Error", "Correct"],
+                    datasets: [
+                    {
+                        data: [totalErrorPercent,totalCorrectPercent],
+                        backgroundColor: [
+                            "#FF6384",
+                            "#4BC0C0"
+                        ]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: false,
+                    },
+                    legend: {
+                        display: false
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+
+        function loadingGIF(boolean) {
+            if (boolean) {
+                var img = document.createElement('img');
+                img.src = './img/ajax-loader.gif';
+                $.blockUI({
+                    message: $(img),
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .6,
+                    },
+                    overlayCSS: {
+                        backgroundColor: '#CCC',
+                        opacity: 0.3,
+                        cursor: 'wait'
+                    },
+                    baseZ: 1050
+                })
+            }
+            else {
+                $.unblockUI();
+            }
+        }
+
+        $('#backBtn').on("click", function(){
+            window.location = "./BarilleHome.html";
+        });	
+	</script>	
+
+</html>

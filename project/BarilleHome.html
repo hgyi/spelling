@@ -20,8 +20,6 @@
 </head>
 
 <body style="background-color: #92cebc">
-
-
     <nav class="navbar navbar-fixed-top navbar-inverse" style="background-color: #FFFFFF; border-color: #FFFFFF;">
         <div class="container">
             <div class="navbar-header">
@@ -85,6 +83,7 @@
     <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
 
 	<script>
+        var emailAccount = "";
         //Menu左側往右移動
         var sideslider = $('[data-toggle=collapse-side]');
             var get_sidebar = sideslider.attr('data-target-sidebar');
@@ -114,10 +113,10 @@
           if (user) {
             loginUser = user;
             console.log("User is logined", user);
-            
             var leadsRef = firebase.database().ref('users/' + loginUser.uid).once('value').then(function(snapshot) {
                 $('#imageSelect').attr("src", snapshot.val().photoSticker);
-                $('h3').html(snapshot.val().name)
+                $('h3').html(snapshot.val().name);
+                emailAccount = snapshot.val().email;
             });
 
           } else {
@@ -151,6 +150,28 @@
         $('#Homt_Btn_Animals').on("click", function(){
             window.location = "./BarilleLevel.html?type=animals"
         });	 	
+        //LearningRecord
+        $('#LearningRecord').on("click", function(){
+            window.location = "./LeaningRecord.html"
+        });	
+        //PersonalInformation
+        $('#PersonalInformation').on("click", function(){
+            window.location = "./PersonalInformation.html"
+        });	
+        //Password
+        $('#Password').on("click",function(){
+            var r = confirm("Change your password?");
+            if (r == true) {
+                firebase.auth().sendPasswordResetEmail(emailAccount).then(function() {
+                    alert("1.You should receive a password reset link via email to the email address associated with your account.\n" + 
+                          "2.Click the URL - if you cannot click the URL, please copy and paste the URL into your browser.\n" +
+                          "3.Lastly, enter your new desired password!");
+                }, function(error) {
+                    alert("Warning！Please contact the administrator");
+                });
+            }  
+        });
+
 	</script>	
 
     <style type="text/css">

@@ -78,6 +78,7 @@
 		var accountL = document.getElementById("email");
 		var pwdL = document.getElementById("password");
 		var loginSmtBtn = document.getElementById("loginSmtBtn");
+		var forgotPassword = document.getElementById("signIn_LogIn_Btn_ForgotPassword");
 		loginSmtBtn.addEventListener("click",function(){
 			firebase.auth().signInWithEmailAndPassword(accountL.value, pwdL.value).catch(function(error) {
 				// Handle Errors here.
@@ -86,6 +87,24 @@
 				alert(errorMessage);
 			})
 		},false);
+
+		forgotPassword.addEventListener("click",function(){
+			if (accountL.value == ""){
+				alert ("Please enter your email");
+			} else {
+				var r = confirm("Forgot your password?");
+				if (r == true) {
+						firebase.auth().sendPasswordResetEmail(accountL.value).then(function() {
+								alert("1.You should receive a password reset link via email to the email address associated with your account.\n" + 
+											"2.Click the URL - if you cannot click the URL, please copy and paste the URL into your browser.\n" +
+											"3.Lastly, enter your new desired password!");
+						}, function(error) {
+								alert("Warning！Please contact the administrator");
+						});
+				}  
+			}
+		});
+
 		
 		//驗證帳號是否已有登入
 		var loginUser;

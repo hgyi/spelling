@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Login</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+
+</head>
+
+<body style="background-color: #FFFFFF">
+	<div id="change_Page_SingIn" class="text-center">
+	  <input type="image" id="ImageSelect" src="data:image/png;base64,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" 
+	  	 	 class="rounded" style=" width:133px; height:132px ;margin-top: 60px;margin-bottom: 30px">
+	  <input type="file" accept="image/*"  id="my_file" style="display: none;" />
+	</div>
+
+	<div class="col-sm-10 form-group-lg">	
+		<form>
+
+			<div class="form-group input-group" style="width:100%; ">
+				<span class="input-group-addon"><i class="fa fa-user"></i></span>
+				<input id="input_name" type="text" class="form-control" placeholder="Name">
+			</div>
+
+			<div class="form-group input-group" style="width:100%; ">
+				<span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+				<input id="email" type="text" class="form-control" placeholder="Email" disabled>
+			</div>
+			
+
+			<div id="change_Page_SingIn" class="text-center">
+			  <img id="saveInformation" src="img/SingUp_Btn_CreateAccount.PNG" class="rounded" style="width:50%">
+			</div>
+			
+			<!--
+			<div class="row text-center" style="border-color: #000000;border-style: solid;margin-left: 0px;margin-right: 0px;margin-top: 20px;">
+				<input id="loginSmtBtn" type="button" class="btn btn-default" value="Login">
+				<input id="registerSmtBtn" type="button" class="btn btn-info" value="Sign Up">
+			</div>
+			-->
+		</form>
+	<div>
+	
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+	<!-- Firebase -->
+	<script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+
+	<script>
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyD543SM0Hz4TZUJfi2rGj4isE0ysSiintE",
+			authDomain: "spelling-5b9a1.firebaseapp.com",
+			databaseURL: "https://spelling-5b9a1.firebaseio.com/",
+			projectId: "spelling-5b9a1",
+			storageBucket: "spelling-5b9a1.appspot.com",
+			messagingSenderId: "249319314175"
+		};
+		firebase.initializeApp(config);
+		var database = firebase.database();
+		
+		//Email/Pwd註冊
+		var loginUser;
+		var input_name = document.getElementById("input_name");
+		var account = document.getElementById("email");
+		var photo = document.getElementById("ImageSelect");
+		var saveInformation = document.getElementById("saveInformation");
+
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            loginUser = user;
+            console.log("User is logined", user);
+            var leadsRef = firebase.database().ref('users/' + loginUser.uid).once('value').then(function(snapshot) {
+				photo.src = snapshot.val().photoSticker;
+				account.value = snapshot.val().email;
+				input_name.value = snapshot.val().name;
+			});
+			
+			saveInformation.addEventListener("click", function(){
+				firebase.database().ref('users/' + loginUser.uid).set({
+					email: loginUser.email,
+					name: input_name.value,
+					photoSticker: photo.src
+				}).catch(function(error){
+					alert("寫入使用者資訊錯誤",error);
+				});
+				alert('Update successful');
+				window.location = "./BarilleHome.html"
+			});
+
+          } else {
+            loginUser = null;
+            alert("User is not logined yet.");
+            window.location = "./signIn.html"
+          }
+		}); 
+		
+		var oInput = document.getElementById("my_file");
+		var oImg = document.getElementById("ImageSelect");
+
+		oImg.onclick = function() {
+			oInput.click();
+		}
+
+		oInput.onchange = function() {
+			var fileData = oInput.files[0];
+			base64(fileData,function(base64Data){
+				oImg.setAttribute("src",base64Data);
+			});
+		}
+
+		function base64(file,backData){
+			var reader = new FileReader();
+			var image = new Image();
+			var canvas = createCanvas();
+			var ctx = canvas.getContext("2d");
+			reader.onload = function() {
+				var result = this.result;
+				image.onload = function() {
+					var imgScale = imgScaleW(720,this.width,this.height);
+					canvas.width = imgScale.width;
+					canvas.height = imgScale.height;
+					ctx.drawImage(image,0,0,imgScale.width,imgScale.height);
+					var dataURL = canvas.toDataURL('image/jpeg');
+					ctx.clearRect(0,0,imgScale.width,imgScale.height);
+					backData(dataURL);
+				}
+				image.src = result;
+			};
+			reader.readAsDataURL(file);
+		}
+
+		function createCanvas(){
+			var canvas = document.getElementById('canvas');
+			if(!canvas){
+				var canvasTag = document.createElement('canvas');
+				canvasTag.setAttribute('id','canvas');
+				canvasTag.setAttribute('style','display:none');
+				document.body.appendChild(canvasTag);
+				canvas = document.getElementById('canvas');
+			}
+			return canvas;
+		}
+
+		function imgScaleW(maxWidth,width,height){
+			var imScale = [];
+			var w = 0;
+			var h = 0;
+			if (width <= maxWidth && height <= maxWidth){
+				imScale = {
+					width: width,
+					height: height
+				}
+			} else {
+				if (width >= height){
+					w = maxWidth;
+					h = Math.ceil(maxWidth * height / width);
+				} else {
+					h = maxWidth;
+					w = Math.ceil(maxWidth * width / height);
+				}
+				imScale = {
+					width: w,
+					height: h
+				}
+			}
+			return imScale;
+		}
+		
+		
+	</script>	
+
+</body>
+
+</html>

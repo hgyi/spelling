@@ -33,6 +33,7 @@
     <script src="http://blockly.webduino.io/lib/webduino-blockly.js"></script>
     <script src="http://blockly.webduino.io/lib/firebase.js"></script>
 
+    <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
 	<script>
         var button;
         var isPushStart = false;
@@ -62,7 +63,8 @@
               if (isPushStart){
                 window.location = "./signIn.html"
               } else {
-                speak(('Trun on the project power'),["en-US",1,1,1]);
+                responsiveVoice.speak("Trun on the project power", "UK English Female", {rate: 1});
+                //speak(('Trun on the project power'),["en-US",1,1,1]);
               }
 			 
 		  });

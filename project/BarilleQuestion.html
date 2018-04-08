@@ -25,7 +25,8 @@
     <div id="nextBtn" class="text-center">
         <img id="nextImg" src="img/questionBtn/next_orange.png" class="rounded" style="width:  70%;">
     </div>
-	<audio id="audioPlay" src="" hidden></audio> 
+    <audio id="audioPlay" src="" hidden></audio> 
+
 	
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.js"></script>
@@ -41,7 +42,8 @@
     <script src="http://blockly.webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
     <script src="http://blockly.webduino.io/lib/webduino-blockly.js"></script>
     <script src="http://blockly.webduino.io/lib/runtime.min.js"></script> 
-    
+    <script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+
 	<script>
 		//計算正確數字以及目前多少題目
         var rfid;
@@ -111,7 +113,8 @@
         //顯示題目至畫面上
 		var word = document.getElementById("word");
         //播放音效(答對或答錯)
-		var audio = document.getElementById("audioPlay");
+        var audio = document.getElementById("audioPlay");
+
         
         //亂數取得一個題目
 		var answerWord = randWord[Math.floor((Math.random() * randWord.length))];
@@ -122,17 +125,11 @@
         }
 		word.innerHTML = answerWord;
 
-        //第一次進畫面會先念一次題目
-        speak(("How do you spell " + answerWord + readAnswerWord),["en-US",1,1,0.7]);
-
-
-        //使用Webduino 已經做好的google語音Api 因次不自行串接
-        /* 
-        audio.src = "https://google-translate-proxy.herokuapp.com/api/tts?query=" + answerWord + 
-                    "\n" + readAnswerWord + "&language=en&speed=0.5"
-		audio.play();
-        */
-
+        $( document ).ready(function() {
+            //第一次進畫面會先念一次題目
+            //speak(("How do you spell " + answerWord + readAnswerWord),["en-US",1,1,0.7]);
+            responsiveVoice.speak("How do you spell " + answerWord + " " + readAnswerWord, "UK English Female", {rate: 0.7});
+        });
         //接RFID的拼字
 		var inputText = "";
 
@@ -234,7 +231,8 @@
 		
 		function userAnswerWordAndRepeat(word) {
             inputText += word;
-            speak(word,["en-US",1,1,0.7]);
+            //speak(word,["en-US",1,1,0.7]);
+            responsiveVoice.speak(word, "UK English Female", {rate: 0.7});
         }
 
         async function servoFunction() {
@@ -280,19 +278,20 @@
             var txt;
             var r = confirm("Do you want to record the quiz?");
             if (r == true) {
-            var postRef = firebase.database().ref('/quiz/' + loginUser.uid);
-            postRef.push().set({
-                uid: loginUser.uid,
-                createTime: Date.now(),
-                quizType: type, 
-                quizLevel: level,
-                questionCount: questionCount,
-                quizData: sentToDBObject
-            }).then(function(){
-                alert("新增成功");
-            }).catch(function(err){
-                alert("新增錯誤：",err);
-            });
+                var postRef = firebase.database().ref('/quiz/' + loginUser.uid);
+                postRef.push().set({
+                    uid: loginUser.uid,
+                    createTime: Date.now(),
+                    quizType: type, 
+                    quizLevel: level,
+                    questionCount: questionCount,
+                    quizData: sentToDBObject
+                }).then(function(){
+                    alert("Save Data Success");
+                    window.location = "./LeaningRecord.html"
+                }).catch(function(err){
+                    alert("Warning！Please contact the administrator");
+                });
             } else {
                 window.location = "./BarilleHome.html"
             }            
@@ -300,14 +299,13 @@
 
         $("#audioPlay").bind('ended', function(){
             if (isCorrect) {
-                speak((" Excellent Next How do you spell " + answerWord + readAnswerWord),["en-US",1,1,0.7]);
+                responsiveVoice.speak("Excellent Next How do you spell " + answerWord + " " + readAnswerWord, "UK English Female", {rate: 0.7});
+                //speak((" Excellent Next How do you spell " + answerWord + readAnswerWord),["en-US",1,1,0.7]);
             } else {
-                speak(("No Correct Please try again " + answerWord),["en-US",1,1,0.7]);
+                responsiveVoice.speak("No Correct Please try again " + answerWord, "UK English Female", {rate: 0.7});
+                //speak(("No Correct Please try again " + answerWord),["en-US",1,1,0.7]);
             }
         });
-
-
-
 
         //取得登入資訊
         var loginUser;
